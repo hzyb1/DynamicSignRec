@@ -256,14 +256,14 @@ def isHello(lmLists):
 #         return False
 #
 #
-# def isTow(lmLists):
-#     if len(lmLists) != 1:
-#         return False
-#     fingers = getFingerStatusByAngle(lmLists[0])
-#     if fingers[0] == 0 and fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 0 and fingers[4] == 0:
-#         return True
-#     else:
-#         return False
+def isTow(lmLists):
+    if len(lmLists) != 1:
+        return False
+    fingers = getFingerStatusByAngle(lmLists[0])
+    if fingers[0] == 0 and fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 0 and fingers[4] == 0:
+        return True
+    else:
+        return False
 #
 #
 # def isThree(lmLists):
@@ -296,14 +296,14 @@ def isHello(lmLists):
 #         return False
 #
 #
-# def isZero(lmLists):
-#     if len(lmLists) != 1:
-#         return False
-#     fingers = getFingerStatusByAngle(lmLists[0])
-#     if fingers[0] == 0 and fingers[1] == 0 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 0:
-#         return True
-#     else:
-#         return False
+def isZero(lmLists):
+    if len(lmLists) != 1:
+        return False
+    fingers = getFingerStatusByAngle(lmLists[0])
+    if fingers[0] == 0 and fingers[1] == 0 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 0:
+        return True
+    else:
+        return False
 
 
 def getFingerStatus(lmList):

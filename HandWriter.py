@@ -13,7 +13,9 @@ def handWrite():
     detector = htm.handDetector(detectionCon=0.75)
 
     drawColor = (0, 255, 0)
+    eraserColor = (0, 0, 0)
     brushThickness = 15
+    eraserThickness = 50
     xp, yp = 0, 0
     imgCanvas = np.zeros((720, 1280, 3), np.uint8)
 
@@ -30,6 +32,7 @@ def handWrite():
             lmList = lmLists[0]
             x1, y1 = lmList[8][:2]
             x2, y2 = lmList[4][:2]
+            x3, y3 = lmList[12][:2]
 
             if util.getDistance((x1, y1), (x2, y2)) < distanceThreshold:
                 print("Drawing Mode")
@@ -42,6 +45,18 @@ def handWrite():
 
                 cv2.line(img, (xp, yp), (x1, y1), drawColor, brushThickness)
                 cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, brushThickness)
+
+                xp, yp = x1, y1
+            elif StaticSign.isTow(lmLists) and util.getDistance((x1, y1), (x3, y3)) < distanceThreshold:
+                x1 = int((x1 + x3) / 2)
+                y1 = int((y1 + y3) / 2)
+                print((x1, y1))
+                cv2.circle(img, (x1, y1), 15, eraserColor, cv2.FILLED)
+                if xp == 0 and yp == 0:
+                    xp, yp = x1, y1
+
+                cv2.line(img, (xp, yp), (x1, y1), eraserColor, eraserThickness)
+                cv2.line(imgCanvas, (xp, yp), (x1, y1), eraserColor, eraserThickness)
 
                 xp, yp = x1, y1
             else:

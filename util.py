@@ -29,7 +29,7 @@ def hand_angle(hand_):
     angle_list = []
     # ---------------------------- thumb 大拇指角度
     angle_ = vector_2d_angle(
-        ((int(hand_[1][0]) - int(hand_[2][0])), (int(hand_[1][1]) - int(hand_[2][1]))),
+        ((int(hand_[0][0]) - int(hand_[2][0])), (int(hand_[0][1]) - int(hand_[2][1]))),
         ((int(hand_[3][0]) - int(hand_[4][0])), (int(hand_[3][1]) - int(hand_[4][1])))
     )
     angle_list.append(angle_)
