@@ -39,9 +39,9 @@ def isFish(lmLists):
     return True
 
 
-# 花的静态识别逻辑：
+# 花的静态识别逻辑： 后续加上掌心向内的判断
 #     单手，开始的时候所以手指指尖离中指很近，后面渐渐远离在中指。所有手指竖直向上的状态，
-
+#
 #     判别5根手指是不是合在一块：             其他手指离中指的距离小于阈值
 #     判读手指是不是伸展向上：                指尖的y坐标大于指节的y坐标
 #
@@ -111,7 +111,8 @@ def isMushroom(lmLists):
     if len(lmLists) != 2:
         return False
     left_fingers = getFingerStatusByAngle(lmLists[0])
-    if not (left_fingers[0] == 0 and left_fingers[1] == 1 and left_fingers[2] == 0 and left_fingers[3] == 0 and
+    # 大拇指的识别率太低率，暂时先把大拇指的判断去掉
+    if not (left_fingers[1] == 1 and left_fingers[2] == 0 and left_fingers[3] == 0 and
             left_fingers[4] == 0):
         return False
 

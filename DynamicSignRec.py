@@ -11,8 +11,8 @@ import HandTrackingModule as htm
 def dynamicSignRec():
     wCam, hCam = 640, 480
     cap = cv2.VideoCapture(0)
-    cap.set(3, wCam)
-    cap.set(4, hCam)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, wCam)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, hCam)
     pTime = 0
     detector = htm.handDetector(detectionCon=0.70)
     i = 0
@@ -23,12 +23,15 @@ def dynamicSignRec():
     isBegin = False
     noHandsCount = 0
     noHandsCountThreshold = 5
-
+    print(cap.set(3, 10))
+    print(cap.get(3))
+    print(cap.get(4))
     text = ""
 
     while True:
         i = (i + 1) % 5
         success, img = cap.read()
+        img = cv2.resize(img, (wCam, hCam), cv2.INTER_CUBIC)
         img = cv2.flip(img, 1)
         img = detector.findHands(img)
         lmLists = detector.findPosition(img)

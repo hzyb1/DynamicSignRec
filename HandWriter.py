@@ -6,9 +6,10 @@ import util
 
 
 def handWrite():
+    wCam, hCam = 330, 330
     cap = cv2.VideoCapture(0)
-    cap.set(3, 1280)
-    cap.set(4, 720)
+    cap.set(3, 960)
+    cap.set(4, hCam)
 
     detector = htm.handDetector(detectionCon=0.75)
 
@@ -17,13 +18,14 @@ def handWrite():
     brushThickness = 15
     eraserThickness = 50
     xp, yp = 0, 0
-    imgCanvas = np.zeros((720, 1280, 3), np.uint8)
+    imgCanvas = np.zeros((hCam, wCam, 3), np.uint8)
 
     distanceThreshold = 40
 
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
+        img = cv2.resize(img, (wCam, hCam), cv2.INTER_CUBIC)
 
         img = detector.findHands(img)
         lmLists = detector.findPosition(img, draw=False)
@@ -62,7 +64,7 @@ def handWrite():
             else:
                 xp, yp = 0, 0
             if StaticSign.isZero(lmLists):
-                imgCanvas = np.zeros((720, 1280, 3), np.uint8)
+                imgCanvas = np.zeros((hCam, wCam, 3), np.uint8)
 
         imgGray = cv2.cvtColor(imgCanvas, cv2.COLOR_BGR2GRAY)
         _, imgInv = cv2.threshold(imgGray, 50, 255, cv2.THRESH_BINARY_INV)
@@ -72,7 +74,7 @@ def handWrite():
         img = cv2.bitwise_or(img, imgCanvas)
 
         cv2.imshow("Image", img)
-        cv2.imshow("Canvas", imgCanvas)
+        # cv2.imshow("Canvas", imgCanvas)
         cv2.waitKey(1)
 
 
