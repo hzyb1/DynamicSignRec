@@ -10,6 +10,10 @@ opencv-python
 在HandWriter.py中的handWrite函数中实现
 
 ## 识别效果
+
+## 配置文件
+文件位置：主目录下 config.ini
+
 ### 动态手势
 目前能识别的手势：草、山、树、蘑菇、花、鱼、人
 后续补充：牛、马、猪

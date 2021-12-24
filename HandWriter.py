@@ -3,24 +3,37 @@ import HandTrackingModule as htm
 import StaticSign
 import numpy as np
 import util
+import configparser
 
 
 def handWrite():
-    wCam, hCam = 330, 330
+    file = 'config.ini'
+
+    # 创建配置文件对象
+    con = configparser.ConfigParser()
+
+    # 读取文件
+    con.read(file, encoding='utf-8')
+
+    items = con.items('handWriterConf')
+
+    items = dict(items)
+
+    wCam, hCam = int(items.get("window_width")), int(items.get("window_height"))
     cap = cv2.VideoCapture(0)
-    cap.set(3, 960)
+    cap.set(3, wCam)
     cap.set(4, hCam)
 
     detector = htm.handDetector(detectionCon=0.75)
 
     drawColor = (0, 255, 0)
     eraserColor = (0, 0, 0)
-    brushThickness = 15
-    eraserThickness = 50
+    brushThickness = int(items.get("brush_thickness"))
+    eraserThickness = int(items.get("eraser_thickness"))
     xp, yp = 0, 0
     imgCanvas = np.zeros((hCam, wCam, 3), np.uint8)
 
-    distanceThreshold = 40
+    distanceThreshold = int(items.get("distance_threshold"))
 
     while True:
         success, img = cap.read()
@@ -75,7 +88,11 @@ def handWrite():
 
         cv2.imshow("Image", img)
         # cv2.imshow("Canvas", imgCanvas)
-        cv2.waitKey(1)
+        idKey = cv2.waitKey(1)
+        if idKey == 27:  # 27 为 ESC 键对应的 ASCII 码
+            # 关闭所有窗口
+            cv2.destroyAllWindows()
+            break
 
 
 if __name__ == '__main__':

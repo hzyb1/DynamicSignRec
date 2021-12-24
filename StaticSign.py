@@ -1,10 +1,16 @@
 import util
 
 tipIds = [4, 8, 12, 16, 20]
+config_items = dict()
 
 
 # 猪，牛，马，人， 鱼， 蝴蝶
 # 草，山，树，花，蘑菇
+
+
+def setConfigItems(items):
+    global config_items
+    config_items = items
 
 
 # 鱼的静态识别逻辑：
@@ -32,8 +38,8 @@ def isFish(lmLists):
         angle = util.vector_2d_angle((lmList[id][0] - lmList[id - 3][0], lmList[id][1] - lmList[id - 3][1]), (0, 1))
         if angle > angle_up_threshold or angle < angle_down_threshold:
             return False
-        if (lmList[4][0] > lmList[0][0] and lmList[id][0] < lmList[id-2][0]) or \
-                (lmList[4][0] < lmList[0][0] and lmList[id][0] > lmList[id-2][0]):
+        if (lmList[4][0] > lmList[0][0] and lmList[id][0] < lmList[id - 2][0]) or \
+                (lmList[4][0] < lmList[0][0] and lmList[id][0] > lmList[id - 2][0]):
             return False
 
     return True
@@ -50,35 +56,12 @@ def isFish(lmLists):
 #       距离的阈值和手离摄像头的距离相关，如果手离摄像头很近，有可能识别失败
 def isFlower(lmLists, isBegin):
     print("isFlower")
-    mid_distance_threshold = 100
-    edge_distance_threshold = 240
+    mid_distance_threshold = int(config_items.get("flower_mid_distance_threshold"))
+    edge_distance_threshold = int(config_items.get("flower_edge_distance_threshold"))
     if isBegin:
-        mid_distance_threshold = 50
-        edge_distance_threshold = 120
+        mid_distance_threshold = mid_distance_threshold / 2
+        edge_distance_threshold = edge_distance_threshold / 2
 
-    if len(lmLists) != 1:
-        return False
-
-    lmList = lmLists[0]
-
-    for id in (8, 12, 16, 20):
-        if lmList[id][1] > lmList[id - 2][1]:
-            return False
-
-    print("flower distance: ", util.getDistance(lmList[8], lmList[12]), util.getDistance(lmList[12], lmList[16]),
-          util.getDistance(lmList[12], lmList[20]), util.getDistance(lmList[12], lmList[4]))
-    if util.getDistance(lmList[8], lmList[12]) > mid_distance_threshold or \
-            util.getDistance(lmList[12], lmList[16]) > mid_distance_threshold or \
-            util.getDistance(lmList[12], lmList[20]) > edge_distance_threshold or \
-            util.getDistance(lmList[12], lmList[4]) > edge_distance_threshold:
-        return False
-    return True
-
-
-def isMidFlower(lmLists):
-    print("isMidFlower")
-    mid_distance_threshold = 100
-    edge_distance_threshold = 200
     if len(lmLists) != 1:
         return False
 
@@ -106,8 +89,8 @@ def isMidFlower(lmLists):
 #     未进行判断：
 def isMushroom(lmLists):
     print("isMushroom")
-    angle_threshold = 120
-    distance_threshold = 180
+    angle_threshold = 110
+    distance_threshold = int(config_items.get("mushroom_distance_threshold"))
     if len(lmLists) != 2:
         return False
     left_fingers = getFingerStatusByAngle(lmLists[0])
@@ -124,6 +107,7 @@ def isMushroom(lmLists):
             ((int(lmLists[1][0][0]) - int(lmLists[1][ids[i] - 3][0])),
              (int(lmLists[1][0][1]) - int(lmLists[1][ids[i] - 3][1])))
         )
+        print("angle", i, angle_)
         if angle_ < angle_threshold:
             return False
     print("mushroom distance:", util.getDistance(lmLists[1][8], lmLists[0][6]))
@@ -143,7 +127,7 @@ def isHuman(lmLists):
     print("isHuman")
     angle_up_threshold = 120
     angle_down_threshold = 60
-    distance_threshold = 50
+    distance_threshold = int(config_items.get("human_distance_threshold"))
     if len(lmLists) != 2:
         return False
     left_fingers = getFingerStatusByAngle(lmLists[0])
@@ -265,6 +249,8 @@ def isTow(lmLists):
         return True
     else:
         return False
+
+
 #
 #
 # def isThree(lmLists):

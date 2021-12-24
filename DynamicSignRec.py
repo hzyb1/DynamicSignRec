@@ -2,6 +2,7 @@ import cv2
 import time
 import JudgeSign
 import HandTrackingModule as htm
+import configparser
 
 
 # 算法描述：
@@ -9,7 +10,19 @@ import HandTrackingModule as htm
 # 获取到需要识别的帧的集合后，去除掉前5帧和后五帧，提取出对这些帧中的手坐标，通过坐标集合进行手势识别
 
 def dynamicSignRec():
-    wCam, hCam = 640, 480
+    file = 'config.ini'
+
+    # 创建配置文件对象
+    con = configparser.ConfigParser()
+
+    # 读取文件
+    con.read(file, encoding='utf-8')
+
+    items = con.items('signRecConf')
+
+    conf_items = dict(items)
+
+    wCam, hCam = int(conf_items.get("window_width")), int(conf_items.get("window_height"))
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, wCam)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, hCam)
@@ -23,9 +36,6 @@ def dynamicSignRec():
     isBegin = False
     noHandsCount = 0
     noHandsCountThreshold = 5
-    print(cap.set(3, 10))
-    print(cap.get(3))
-    print(cap.get(4))
     text = ""
 
     while True:
@@ -43,7 +53,7 @@ def dynamicSignRec():
                 if noHandsCount >= noHandsCountThreshold:
                     isBegin = False
                     if len(postions) > 10:
-                        text = JudgeSign.judgeSign(postions[5:len(postions) - 5])
+                        text = JudgeSign.judgeSign(postions[5:len(postions) - 5], conf_items)
         else:
             if len(lmLists) != 0:
                 isBegin = True
@@ -58,7 +68,11 @@ def dynamicSignRec():
 
         cv2.putText(img, f'FPS:{int(fps)}', (400, 70), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 0, 0), 3)
         cv2.imshow("Image", img)
-        cv2.waitKey(1)
+        idKey = cv2.waitKey(1)
+        if idKey == 27:  # 27 为 ESC 键对应的 ASCII 码
+            # 关闭所有窗口
+            cv2.destroyAllWindows()
+            break
 
 
 if __name__ == '__main__':

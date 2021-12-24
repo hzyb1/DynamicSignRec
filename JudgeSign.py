@@ -67,9 +67,10 @@ def getBeginSign(postions):
     return dynamicSigns[text], postions[i:]
 
 
-def judgeSign(postions):
+def judgeSign(postions, conf_items):
     print("lenPostions: ", len(postions))
     # 判断第一个能识别出来的帧对应的哪个手势的起手式
+    StaticSign.setConfigItems(conf_items)
     dynamic_ign, filt_postions = getBeginSign(postions)
     text = dynamic_ign.isTrue(filt_postions)
     return text
