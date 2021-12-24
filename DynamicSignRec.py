@@ -2,7 +2,6 @@ import cv2
 import time
 import JudgeSign
 import HandTrackingModule as htm
-import configparser
 
 
 # 算法描述：
@@ -10,19 +9,7 @@ import configparser
 # 获取到需要识别的帧的集合后，去除掉前5帧和后五帧，提取出对这些帧中的手坐标，通过坐标集合进行手势识别
 
 def dynamicSignRec():
-    file = 'config.ini'
-
-    # 创建配置文件对象
-    con = configparser.ConfigParser()
-
-    # 读取文件
-    con.read(file, encoding='utf-8')
-
-    items = con.items('signRecConf')
-
-    conf_items = dict(items)
-
-    wCam, hCam = int(conf_items.get("window_width")), int(conf_items.get("window_height"))
+    wCam, hCam = 1280, 720
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, wCam)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, hCam)
@@ -36,6 +23,9 @@ def dynamicSignRec():
     isBegin = False
     noHandsCount = 0
     noHandsCountThreshold = 5
+    print(cap.set(3, 10))
+    print(cap.get(3))
+    print(cap.get(4))
     text = ""
 
     while True:
@@ -53,7 +43,7 @@ def dynamicSignRec():
                 if noHandsCount >= noHandsCountThreshold:
                     isBegin = False
                     if len(postions) > 10:
-                        text = JudgeSign.judgeSign(postions[5:len(postions) - 5], conf_items)
+                        text = JudgeSign.judgeSign(postions[5:len(postions) - 5])
         else:
             if len(lmLists) != 0:
                 isBegin = True

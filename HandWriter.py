@@ -3,23 +3,10 @@ import HandTrackingModule as htm
 import StaticSign
 import numpy as np
 import util
-import configparser
 
 
 def handWrite():
-    file = 'config.ini'
-
-    # 创建配置文件对象
-    con = configparser.ConfigParser()
-
-    # 读取文件
-    con.read(file, encoding='utf-8')
-
-    items = con.items('handWriterConf')
-
-    items = dict(items)
-
-    wCam, hCam = int(items.get("window_width")), int(items.get("window_height"))
+    wCam, hCam = 1280, 720
     cap = cv2.VideoCapture(0)
     cap.set(3, wCam)
     cap.set(4, hCam)
@@ -28,12 +15,12 @@ def handWrite():
 
     drawColor = (0, 255, 0)
     eraserColor = (0, 0, 0)
-    brushThickness = int(items.get("brush_thickness"))
-    eraserThickness = int(items.get("eraser_thickness"))
+    brushThickness = 15
+    eraserThickness = 50
     xp, yp = 0, 0
     imgCanvas = np.zeros((hCam, wCam, 3), np.uint8)
 
-    distanceThreshold = int(items.get("distance_threshold"))
+    distanceThreshold = 40
 
     while True:
         success, img = cap.read()
