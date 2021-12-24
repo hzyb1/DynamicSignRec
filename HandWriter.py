@@ -6,9 +6,9 @@ import util
 
 
 def handWrite():
-    wCam, hCam = 330, 330
+    wCam, hCam = 1280, 720
     cap = cv2.VideoCapture(0)
-    cap.set(3, 960)
+    cap.set(3, wCam)
     cap.set(4, hCam)
 
     detector = htm.handDetector(detectionCon=0.75)
@@ -75,7 +75,11 @@ def handWrite():
 
         cv2.imshow("Image", img)
         # cv2.imshow("Canvas", imgCanvas)
-        cv2.waitKey(1)
+        idKey = cv2.waitKey(1)
+        if idKey == 27:  # 27 为 ESC 键对应的 ASCII 码
+            # 关闭所有窗口
+            cv2.destroyAllWindows()
+            break
 
 
 if __name__ == '__main__':

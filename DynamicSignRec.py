@@ -9,7 +9,7 @@ import HandTrackingModule as htm
 # 获取到需要识别的帧的集合后，去除掉前5帧和后五帧，提取出对这些帧中的手坐标，通过坐标集合进行手势识别
 
 def dynamicSignRec():
-    wCam, hCam = 640, 480
+    wCam, hCam = 1280, 720
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, wCam)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, hCam)
@@ -58,7 +58,11 @@ def dynamicSignRec():
 
         cv2.putText(img, f'FPS:{int(fps)}', (400, 70), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 0, 0), 3)
         cv2.imshow("Image", img)
-        cv2.waitKey(1)
+        idKey = cv2.waitKey(1)
+        if idKey == 27:  # 27 为 ESC 键对应的 ASCII 码
+            # 关闭所有窗口
+            cv2.destroyAllWindows()
+            break
 
 
 if __name__ == '__main__':
