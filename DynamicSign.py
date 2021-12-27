@@ -14,6 +14,85 @@ class Sign:
         return "unKnow"
 
 
+class HorseSign(Sign):
+
+    def __init__(self):
+        self.palm_moves = []
+        self.thumb_moves = []
+        self.ring_moves = []
+
+    def isTrue(self, postions):
+        count = 0
+        self.palm_moves = []
+        self.thumb_moves = []
+        self.ring_moves = []
+        for lmLists in postions:
+            if StaticSign.isHorse(lmLists):
+                count = count + 1
+                self.palm_moves.append(lmLists[0][0])
+                self.thumb_moves.append(lmLists[0][4])
+                self.ring_moves.append(lmLists[0][8])
+        print(len(postions) * sign_contains_threshold, count)
+        if len(postions) * sign_contains_threshold <= count and self.isRightMove():
+            return "horse"
+        else:
+            return "unKnow"
+
+    def isRightMove(self):
+        if util.isStaticPoints(self.palm_moves) and util.isStaticPoints(self.thumb_moves)\
+                and util.isVerticalMove(self.ring_moves):
+            return True
+        return False
+
+
+class PigSign(Sign):
+
+    def __init__(self):
+        self.palm_moves = []
+        self.thumb_moves = []
+        self.ring_moves = []
+
+    def isTrue(self, postions):
+        count = 0
+        self.palm_moves = []
+        self.thumb_moves = []
+        self.ring_moves = []
+        for lmLists in postions:
+            if StaticSign.isPig(lmLists):
+                count = count + 1
+                self.palm_moves.append(lmLists[0][0])
+                self.thumb_moves.append(lmLists[0][4])
+                self.ring_moves.append(lmLists[0][8])
+        print(len(postions) * sign_contains_threshold, count)
+        if len(postions) * sign_contains_threshold <= count and self.isRightMove():
+            return "pig"
+        else:
+            return "unKnow"
+
+    def isRightMove(self):
+        if not util.isStaticPoints(self.palm_moves):
+            print("herer")
+            print(self.palm_moves)
+        if util.isStaticPoints(self.palm_moves) and util.isStaticPoints(self.thumb_moves)\
+                and util.isVerticalMove(self.ring_moves):
+            return True
+        return False
+
+
+class CowSign(Sign):
+
+    def isTrue(self, postions):
+        count = 0
+        for lmLists in postions:
+            if StaticSign.isCow(lmLists):
+                count = count + 1
+        print(len(postions) * sign_contains_threshold, count)
+        if len(postions) * sign_contains_threshold <= count:
+            return "cow"
+        else:
+            return "unKnow"
+
+
 class FishSign(Sign):
 
     def __init__(self):

@@ -173,6 +173,19 @@ def getMin(values):
     return min_value
 
 
+def isStaticPoints(coordinates):
+    if len(coordinates) < 3:
+        return False
+    xs = []
+    ys = []
+    for coordinate in coordinates:
+        xs.append(coordinate[0])
+        ys.append(coordinate[1])
+    if isHorizontal(xs) and isHorizontal(ys):
+        return True
+    return False
+
+
 def isHorizontal(values):
     threshold = 40
 

@@ -3,8 +3,88 @@ import util
 tipIds = [4, 8, 12, 16, 20]
 
 
-# 猪，牛，马，人， 鱼， 蝴蝶
+# 猪，牛，马，人， 鱼
 # 草，山，树，花，蘑菇
+
+
+# 马的静态识别逻辑：
+#
+#     手掌竖直：               通过大拇指位于其他手指下方判断
+#     食指和中指张开：               角度判断
+#
+#     未进行判断：
+def isHorse(lmLists):
+    print("isHorse")
+    if len(lmLists) != 1:
+        return False
+
+    lmList = lmLists[0]
+    fingers = getFingerStatusByAngle(lmList)
+
+    if not ((fingers[0] == 0 and fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 0 and
+             fingers[4] == 0) or (fingers[0] == 0 and fingers[1] != 1 and fingers[2] != 1 and fingers[3] == 0 and
+                                  fingers[4] == 0)):
+        return False
+
+    for id in (8, 12):
+        if lmList[4][1] < lmList[id][1]:
+            print("ishorse", id, lmList[4][1], lmList[id][1])
+            return False
+
+    return True
+
+
+# 猪的静态识别逻辑：
+#
+#     手掌竖直：               通过大拇指位于其他手指下方判断
+#     五指张开：               角度判断
+#
+#     未进行判断：
+def isPig(lmLists):
+    print("isPig")
+    if len(lmLists) != 1:
+        return False
+
+    lmList = lmLists[0]
+    fingers = getFingerStatusByAngle(lmList)
+
+    if not ((fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 1 and
+            fingers[4] == 1) or (fingers[0] != 1 and fingers[1] != 1 and fingers[2] != 1 and fingers[3] != 1 and
+            fingers[4] != 1)):
+        return False
+
+    for id in (8, 12, 16, 20):
+        if lmList[4][1] < lmList[id][1]:
+            return False
+
+    return True
+
+
+# 牛的静态识别逻辑：
+#
+#     手心向外：                      通过中间三根手指指节y坐标小于指尖
+#     大拇指和食指张开：               角度判断
+#
+#     未进行判断：
+#       手没张开也会识别成功，是否需要加上
+#       距离的阈值和手离摄像头的距离相关，如果手离摄像头很近，有可能识别失败
+def isCow(lmLists):
+    print("isCow")
+    if len(lmLists) != 1:
+        return False
+
+    lmList = lmLists[0]
+    fingers = getFingerStatusByAngle(lmList)
+
+    if not (fingers[0] == 1 and fingers[1] == 0 and fingers[2] == 0 and fingers[3] == 0 and
+            fingers[4] == 1):
+        return False
+
+    for id in (5, 9, 13):
+        if lmList[id][1] > lmList[id + 2][1]:
+            print("here", id, lmList[id][1], lmList[id + 2][1])
+            return False
+    return True
 
 
 # 鱼的静态识别逻辑：
