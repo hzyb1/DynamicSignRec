@@ -2,98 +2,60 @@
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import time
 
 import mediapipe as mp
 import cv2
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
-mp_hands = mp.solutions.hands
+import DynamicSignRec
+import HandWriter
+import _thread
+import UdpComms as U
 
-# For static images:
-IMAGE_FILES = []
-with mp_hands.Hands(
-    static_image_mode=True,
-    max_num_hands=2,
-    min_detection_confidence=0.5) as hands:
-  for idx, file in enumerate(IMAGE_FILES):
-    # Read an image, flip it around y-axis for correct handedness output (see
-    # above).
-    image = cv2.flip(cv2.imread(file), 1)
-    # Convert the BGR image to RGB before processing.
-    results = hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+g_flag = False
+g_text = ""
+sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
 
-    # Print handedness and draw hand landmarks on the image.
-    print('Handedness:', results.multi_handedness)
-    if not results.multi_hand_landmarks:
-      continue
-    image_height, image_width, _ = image.shape
-    annotated_image = image.copy()
-    for hand_landmarks in results.multi_hand_landmarks:
-      print('hand_landmarks:', hand_landmarks)
-      print(
-          f'Index finger tip coordinates: (',
-          f'{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x * image_width}, '
-          f'{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y * image_height})'
-      )
-      mp_drawing.draw_landmarks(
-          annotated_image,
-          hand_landmarks,
-          mp_hands.HAND_CONNECTIONS,
-          mp_drawing_styles.get_default_hand_landmarks_style(),
-          mp_drawing_styles.get_default_hand_connections_style())
-    cv2.imwrite(
-        '/tmp/annotated_image' + str(idx) + '.png', cv2.flip(annotated_image, 1))
-    # Draw hand world landmarks.
-    if not results.multi_hand_world_landmarks:
-      continue
-    for hand_world_landmarks in results.multi_hand_world_landmarks:
-      mp_drawing.plot_landmarks(
-        hand_world_landmarks, mp_hands.HAND_CONNECTIONS, azimuth=5)
 
-# For webcam input:
-cap = cv2.VideoCapture(0)
-with mp_hands.Hands(
-    model_complexity=0,
-    min_detection_confidence=0.5,
-    min_tracking_confidence=0.5) as hands:
-  while cap.isOpened():
-    success, image = cap.read()
-    if not success:
-      print("Ignoring empty camera frame.")
-      # If loading a video, use 'break' instead of 'continue'.
-      continue
+def sever(delay):
+    global g_flag, g_text
+    # socket = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
+    while True:
+        # print("server", time.ctime(time.time()))
+        data = sock.ReadReceivedData()
+        if data != None:
+            print("revice data", data)
+            g_flag = True
+            g_text = data.strip()
+        time.sleep(delay)
 
-    # To improve performance, optionally mark the image as not writeable to
-    # pass by reference.
-    image.flags.writeable = False
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    results = hands.process(image)
 
-    # Draw the hand annotations on the image.
-    image.flags.writeable = True
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-    if results.multi_hand_landmarks:
-      for hand_landmarks in results.multi_hand_landmarks:
-        print("handmarks: {}".format(hand_landmarks))
-        mp_drawing.draw_landmarks(
-            image,
-            hand_landmarks,
-            mp_hands.HAND_CONNECTIONS,
-            mp_drawing_styles.get_default_hand_landmarks_style(),
-            mp_drawing_styles.get_default_hand_connections_style())
-    # Flip the image horizontally for a selfie-view display.
-    cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
-    if cv2.waitKey(5) & 0xFF == 27:
-      break
-cap.release()
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def sendAns(data):
+    sock.SendData(data)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    _thread.start_new_thread(sever, (0.5,))
+    wCam, hCam = 1280, 720
+    cap = cv2.VideoCapture(0)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, wCam)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, hCam)
+    while True:
+        # print("main", g_flag, g_text)
+        if g_flag:
+            if g_text != "handWrite":
+                ans = DynamicSignRec.dynamicSignRecUtil(cap, wCam, hCam)
+
+                if ans == g_text:
+                    data = "True"
+                else:
+                    data = "False"
+                print("send data", data)
+                sock.SendData(data)
+            else:
+                HandWriter.handWriteUtil(cap, wCam, hCam)
+            g_flag = False
+        time.sleep(0.5)
+    time.sleep(10)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

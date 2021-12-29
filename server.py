@@ -10,19 +10,35 @@
 
 import UdpComms as U
 import time
+import main
 
 # Create UDP socket to use for sending (and receiving)
 sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
 
-i = 0
+# i = 0
+#
+# while True:
+#     sock.SendData('Sent from Python: ' + str(i))  # Send this string to other application
+#     i += 1
+#
+#     data = sock.ReadReceivedData()  # read data
+#
+#     if data != None:  # if NEW data has been received since last ReadReceivedData function call
+#         print(data)  # print new received data
+#
+#     time.sleep(1)
 
-while True:
-    sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
-    i += 1
 
-    data = sock.ReadReceivedData() # read data
+def sever(delay):
+    # socket = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
+    while True:
+        print("server", time.ctime(time.time()))
+        data = sock.ReadReceivedData()
+        if data != None:
+            print("revice data", data)
+            main.setText(data)
+        time.sleep(delay)
 
-    if data != None: # if NEW data has been received since last ReadReceivedData function call
-        print(data) # print new received data
 
-    time.sleep(1)
+def sendAns(ans):
+    sock.SendData(ans)
