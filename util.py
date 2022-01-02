@@ -113,14 +113,15 @@ def isVerticalMove(coordinates):
     for coordinate in coordinates:
         xs.append(coordinate[0])
         ys.append(coordinate[1])
-    if overAndOver(ys) and isHorizontal(xs):
+    # if overAndOver(ys) and isHorizontal(xs):
+    if overAndOver(ys):
         return True
     return False
 
 
 # 纵向向上移动
 def isVerticalUpMove(coordinates):
-    if len(coordinates) < 3:
+    if len(coordinates) < 6:
         return False
     xs = []
     ys = []
@@ -128,7 +129,7 @@ def isVerticalUpMove(coordinates):
         xs.append(coordinate[0])
         ys.append(coordinate[1])
     ys.reverse()
-    if isUp(ys):
+    if isUp(ys[:len(ys)-3]):
         return True
     return False
 
@@ -187,7 +188,7 @@ def isStaticPoints(coordinates):
 
 
 def isHorizontal(values):
-    threshold = 40
+    threshold = 60
 
     arr_std_1 = np.std(values)
     print("std: ", arr_std_1)
@@ -221,7 +222,7 @@ def overAndOver(values):
 def isUp(values):
     count_threshold = 0.7
     up_count_threshold = 0.25
-    equal_threshold = 4
+    equal_threshold = 8
     pre = values[0]
     equal_count = 0
     up_count = 0

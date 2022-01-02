@@ -130,8 +130,8 @@ def isFish(lmLists):
 #       距离的阈值和手离摄像头的距离相关，如果手离摄像头很近，有可能识别失败
 def isFlower(lmLists, isBegin):
     print("isFlower")
-    mid_distance_threshold = 100
-    edge_distance_threshold = 240
+    mid_distance_threshold = 120
+    edge_distance_threshold = 300
     if isBegin:
         mid_distance_threshold = 50
         edge_distance_threshold = 120
@@ -186,7 +186,7 @@ def isMidFlower(lmLists):
 #     未进行判断：
 def isMushroom(lmLists):
     print("isMushroom")
-    angle_threshold = 120
+    angle_threshold = 90
     distance_threshold = 180
     if len(lmLists) != 2:
         return False

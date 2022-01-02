@@ -5,7 +5,7 @@ import StaticSign
 # class DynamicSign
 helloThreshold = 5
 
-sign_contains_threshold = 0.7
+sign_contains_threshold = 0.6
 
 
 class Sign:
