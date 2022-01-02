@@ -49,13 +49,15 @@ def isPig(lmLists):
     fingers = getFingerStatusByAngle(lmList)
 
     if not ((fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 1 and fingers[3] == 1 and
-            fingers[4] == 1) or (fingers[0] != 1 and fingers[1] != 1 and fingers[2] != 1 and fingers[3] != 1 and
-            fingers[4] != 1)):
+             fingers[4] == 1) or (fingers[0] == 1 and fingers[1] != 1 and fingers[2] != 1 and fingers[3] != 1 and
+                                  fingers[4] != 1)):
         return False
 
-    for id in (8, 12, 16, 20):
-        if lmList[4][1] < lmList[id][1]:
-            return False
+    if not ((lmList[4][1] < lmList[8][1] and lmList[4][1] < lmList[12][1]
+             and lmList[4][1] < lmList[16][1] and lmList[4][1] < lmList[20][1]) or
+            (lmList[4][1] > lmList[8][1] and lmList[4][1] > lmList[12][1]
+             and lmList[4][1] > lmList[16][1] and lmList[4][1] > lmList[20][1])):
+        return False
 
     return True
 
@@ -112,8 +114,8 @@ def isFish(lmLists):
         angle = util.vector_2d_angle((lmList[id][0] - lmList[id - 3][0], lmList[id][1] - lmList[id - 3][1]), (0, 1))
         if angle > angle_up_threshold or angle < angle_down_threshold:
             return False
-        if (lmList[4][0] > lmList[0][0] and lmList[id][0] < lmList[id-2][0]) or \
-                (lmList[4][0] < lmList[0][0] and lmList[id][0] > lmList[id-2][0]):
+        if (lmList[4][0] > lmList[0][0] and lmList[id][0] < lmList[id - 2][0]) or \
+                (lmList[4][0] < lmList[0][0] and lmList[id][0] > lmList[id - 2][0]):
             return False
 
     return True
@@ -345,6 +347,8 @@ def isTow(lmLists):
         return True
     else:
         return False
+
+
 #
 #
 # def isThree(lmLists):
