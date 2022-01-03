@@ -50,6 +50,7 @@ if __name__ == '__main__':
                     data = "True"
                 else:
                     data = "False"
+                print("receive", g_text, "rec result", ans)
                 print("send data", data)
                 sock.SendData(data)
             else:

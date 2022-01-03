@@ -147,6 +147,7 @@ def handWriteUtil(cap, wCam, hCam):
         elif len(lmLists) == 0:
             count_without_hand = count_without_hand+1
             if begin_write and count_without_hand > count_without_hand_threshold:
+                cv2.destroyAllWindows()
                 break
 
         imgGray = cv2.cvtColor(imgCanvas, cv2.COLOR_BGR2GRAY)
