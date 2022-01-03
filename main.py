@@ -55,6 +55,8 @@ if __name__ == '__main__':
                 sock.SendData(data)
             else:
                 HandWriter.handWriteUtil(cap, wCam, hCam)
+                sock.SendData("True")
+                #假装都写对
             g_flag = False
         time.sleep(0.5)
     time.sleep(10)
