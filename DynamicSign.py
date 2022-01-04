@@ -14,6 +14,20 @@ class Sign:
         return "unKnow"
 
 
+class HomeSign(Sign):
+
+    def isTrue(self, postions):
+        count = 0
+        for lmLists in postions:
+            if StaticSign.isHome(lmLists):
+                count = count + 1
+        print(len(postions) * sign_contains_threshold, count)
+        if len(postions) * sign_contains_threshold > count:
+            return "unKnow"
+        else:
+            return "home"
+
+
 class HorseSign(Sign):
 
     def __init__(self):

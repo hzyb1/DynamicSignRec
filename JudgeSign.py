@@ -14,14 +14,18 @@ dynamicSigns["fish"] = DynamicSign.FishSign()
 dynamicSigns["cow"] = DynamicSign.CowSign()
 dynamicSigns["pig"] = DynamicSign.PigSign()
 dynamicSigns["horse"] = DynamicSign.HorseSign()
+dynamicSigns["home"] = DynamicSign.HomeSign()
 
 
 def getBeginSign(postions):
     i = -1
     for lmLists in postions:
         i = i+1
-        if StaticSign.isHello(lmLists):
-            text = "hello"
+        # if StaticSign.isHello(lmLists):
+        #     text = "hello"
+        #     break
+        if StaticSign.isHome(lmLists):
+            text = "home"
             break
         elif StaticSign.isHorse(lmLists):
             text = "horse"

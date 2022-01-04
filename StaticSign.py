@@ -6,6 +6,37 @@ tipIds = [4, 8, 12, 16, 20]
 # 猪，牛，马，人， 鱼
 # 草，山，树，花，蘑菇
 
+# 马的静态识别逻辑：
+#
+#     手掌竖直：               通过大拇指位于其他手指下方判断
+#     食指和中指张开：               角度判断
+#
+#     未进行判断：
+def isHome(lmLists):
+    print("isHome")
+    angle_low_threshold = 45
+    angle_up_threshold = 135
+    distance_threshold = 50
+    if len(lmLists) != 2:
+        return False
+
+    ids = (8, 12, 16, 20)
+    for i in range(0, 4):
+        angle_ = util.vector_2d_angle(
+            ((int(lmLists[0][ids[i]][0]) - int(lmLists[0][ids[i] - 3][0])),
+             (int(lmLists[0][ids[i]][1]) - int(lmLists[0][ids[i] - 3][1]))),
+            ((int(lmLists[1][ids[i]][0]) - int(lmLists[1][ids[i] - 3][0])),
+             (int(lmLists[1][ids[i]][1]) - int(lmLists[1][ids[i] - 3][1])))
+        )
+        print(angle_)
+        if angle_ > angle_up_threshold or angle_ < angle_low_threshold:
+            return False
+    print("home distance:", util.getDistance(lmLists[0][12], lmLists[1][12]))
+    if not (util.getDistance(lmLists[0][12], lmLists[1][12]) < distance_threshold):
+        return False
+
+    return True
+
 
 # 马的静态识别逻辑：
 #
@@ -42,6 +73,8 @@ def isHorse(lmLists):
 #     未进行判断：
 def isPig(lmLists):
     print("isPig")
+    angle_up_threshold = 110
+    angle_low_threshold = 70
     if len(lmLists) != 1:
         return False
 
@@ -58,6 +91,17 @@ def isPig(lmLists):
             (lmList[4][1] > lmList[8][1] and lmList[4][1] > lmList[12][1]
              and lmList[4][1] > lmList[16][1] and lmList[4][1] > lmList[20][1])):
         return False
+
+    ids = (8, 12, 16, 20)
+    for i in range(0, 4):
+        angle_ = util.vector_2d_angle(
+            ((int(lmList[ids[i]][0]) - int(lmList[ids[i] - 3][0])),
+             (int(lmList[ids[i]][1]) - int(lmList[ids[i] - 3][1]))),
+            (1, 0)
+        )
+        print(angle_)
+        if angle_ > angle_up_threshold or angle_ < angle_low_threshold:
+            return False
 
     return True
 
@@ -132,6 +176,8 @@ def isFish(lmLists):
 #       距离的阈值和手离摄像头的距离相关，如果手离摄像头很近，有可能识别失败
 def isFlower(lmLists, isBegin):
     print("isFlower")
+    angle_up_threshold = 110
+    angle_low_threshold = 70
     mid_distance_threshold = 120
     edge_distance_threshold = 300
     if isBegin:
@@ -154,29 +200,18 @@ def isFlower(lmLists, isBegin):
             util.getDistance(lmList[12], lmList[20]) > edge_distance_threshold or \
             util.getDistance(lmList[12], lmList[4]) > edge_distance_threshold:
         return False
-    return True
 
-
-def isMidFlower(lmLists):
-    print("isMidFlower")
-    mid_distance_threshold = 100
-    edge_distance_threshold = 200
-    if len(lmLists) != 1:
+    angle_ = util.vector_2d_angle(
+        ((int(lmList[10][0]) - int(lmList[9][0])),
+        (int(lmList[10][1]) - int(lmList[9][1]))),
+        (1, 0)
+    )
+    print(angle_)
+    if angle_ > angle_up_threshold or angle_ < angle_low_threshold:
         return False
 
-    lmList = lmLists[0]
 
-    for id in (8, 12, 16, 20):
-        if lmList[id][1] > lmList[id - 2][1]:
-            return False
 
-    print("flower distance: ", util.getDistance(lmList[8], lmList[12]), util.getDistance(lmList[12], lmList[16]),
-          util.getDistance(lmList[12], lmList[20]), util.getDistance(lmList[12], lmList[4]))
-    if util.getDistance(lmList[8], lmList[12]) > mid_distance_threshold or \
-            util.getDistance(lmList[12], lmList[16]) > mid_distance_threshold or \
-            util.getDistance(lmList[12], lmList[20]) > edge_distance_threshold or \
-            util.getDistance(lmList[12], lmList[4]) > edge_distance_threshold:
-        return False
     return True
 
 

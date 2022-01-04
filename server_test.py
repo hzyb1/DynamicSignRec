@@ -26,8 +26,8 @@ def test_revice():
 
 
 if __name__ == '__main__':
-    _thread.start_new_thread(test_something,())
-    _thread.start_new_thread(test_revice,())
+    _thread.start_new_thread(test_something, ())
+    _thread.start_new_thread(test_revice, ())
     while True:
 
         data = sock.ReadReceivedData()
