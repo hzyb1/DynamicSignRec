@@ -98,6 +98,10 @@ def handWriteUtil(cap, wCam, hCam):
     count_without_hand_threshold = 30
     begin_write = False
 
+    logo_size = (100, 100)
+    logo_img = cv2.imread("picture/handwrite.jpeg")
+    logo_img = cv2.resize(logo_img, logo_size, logo_img)
+
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
@@ -156,6 +160,9 @@ def handWriteUtil(cap, wCam, hCam):
         img = cv2.bitwise_and(img, imgInv)
         img = cv2.bitwise_and(img, imgInv)
         img = cv2.bitwise_or(img, imgCanvas)
+
+        # add logo
+        img[0:100, 0:100] = logo_img
 
         cv2.imshow("Image", img)
         # cv2.imshow("Canvas", imgCanvas)

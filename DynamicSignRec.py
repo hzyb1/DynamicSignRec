@@ -79,6 +79,10 @@ def dynamicSignRecUtil(cap, wCam, hCam):
     noHandsCountThreshold = 5
     text = ""
 
+    logo_size = (100, 100)
+    logo_img = cv2.imread("picture/sign.png")
+    logo_img = cv2.resize(logo_img, logo_size, logo_img)
+
     while True:
         i = (i + 1) % 5
         success, img = cap.read()
@@ -103,6 +107,8 @@ def dynamicSignRecUtil(cap, wCam, hCam):
                 postions = []
                 postions.append(lmLists)
 
+        # add logo
+        img[0:100, 0:100] = logo_img
         cv2.imshow("Image", img)
         idKey = cv2.waitKey(1)
         if idKey == 27:  # 27 为 ESC 键对应的 ASCII 码
